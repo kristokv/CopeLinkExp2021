@@ -6,10 +6,10 @@
 
 Datasets:<br>
 * cop_data_final: Overview of copepod samples from all experiments, with stage and preservation method. <br>
-* particles_compare_final: Particle concentration in the <5 ??m (SMALL) and 5-40 ??m (LARGE) size range, and total volume of particles and mean particle size in the 5-40 ??m size range, measured from the different experimental bottles before and after each feeding experiment.<br>
+* particles_compare_final: Particle concentration in the <5 um (SMALL) and 5-40 um (LARGE) size range, and total volume of particles and mean particle size in the 5-40 um size range, measured from the different experimental bottles before and after each feeding experiment.<br>
 * fecal_data_final: Number of fecal pellets counted during a 5 min. time interval from the different experimental bottles after each feeding experiment.<br>
-* qpcr_lam_final: Estimated *Laminaria hyperborea* DNA concentration (ng DNA/??l) extracted from copepods from different food treatments, compared to blanks (no sample material) and samples extracted from sedated copepods that were submerged in the kelp material for 1 min and then rinsed.<br>
-* qpcr_sac_final: Estimated *Saccharina latissima* DNA concentration (ng DNA/??l) extracted from copepods from different food treatments, compared to blanks (no sample material) and samples extracted from sedated copepods that were submerged in the kelp material for 1 min and then rinsed.<br>
+* qpcr_lam_final: Estimated *Laminaria hyperborea* DNA concentration (ng DNA/ul) extracted from copepods from different food treatments, compared to blanks (no sample material) and samples extracted from sedated copepods that were submerged in the kelp material for 1 min and then rinsed.<br>
+* qpcr_sac_final: Estimated *Saccharina latissima* DNA concentration (ng DNA/ul) extracted from copepods from different food treatments, compared to blanks (no sample material) and samples extracted from sedated copepods that were submerged in the kelp material for 1 min and then rinsed.<br>
 
 
 Food treatments:<br>
