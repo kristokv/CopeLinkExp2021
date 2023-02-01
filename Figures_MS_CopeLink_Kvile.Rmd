@@ -1,0 +1,156 @@
+---
+title: "The possible copepod link between kelp forests, the pelagic ecosystem and deep-sea carbon sequestration"
+author: "Kristina Øie Kvile, Norwegian Institute for Water Research (NIVA)"
+date: '`r format(Sys.Date(), "%d %B %Y")`'
+output:
+  html_document:
+    toc: true
+    toc_depth: 2
+editor_options: 
+  chunk_output_type: console
+chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(warning = FALSE, echo = FALSE, message = FALSE)
+knitr::opts_chunk$set(fig.retina = 1)
+
+require(readxl)
+require(tidyverse)
+require(knitr)
+require(gridExtra)
+require(captioner)
+library(rstatix)
+
+# Read data
+cop_data <- read_xlsx("cop_data_final.xlsx")
+
+fecal_data <- read_xlsx("fecal_data_final.xlsx") %>%
+    mutate(TREATMENT = factor(TREATMENT)) %>%
+    mutate(TREATMENT = fct_relevel(TREATMENT, c("NONE","PHYTO","LAMHY-FE","LAMHY-FR",
+                     "SACLA-FE","SACLA-FR")))
+
+particles_compare <- read_xlsx("particles_compare_final.xlsx") %>%
+    mutate(TREATMENT = factor(TREATMENT)) %>%
+    mutate(TREATMENT = fct_relevel(TREATMENT, c("NONE","PHYTO","LAMHY-FE","LAMHY-FR",
+                     "SACLA-FE","SACLA-FR")))
+
+qpcr_lam <- read_xlsx("qpcr_lam_final.xlsx") %>%
+  mutate(Target = as.factor(Target)) %>%
+  mutate(Target = fct_relevel(Target, c("BLANK","NONE","PHYTO","LAMHY-FE","LAMHY-FR",
+                      "LAMHY-FE-SEDATED")))
+                        
+qpcr_sac <- read_xlsx("qpcr_sac_final.xlsx") %>%
+  mutate(Target = as.factor(Target)) %>%
+  mutate(Target = fct_relevel(Target, c("BLANK","NONE","PHYTO","SACLA-FE","SACLA-FR",
+                      "SACLA-FE-SEDATED")))
+
+# Figure labeling
+figs <- captioner(prefix="Fig.")
+          
+particle_plot <- figs(name="particle_plot","Concentrations of food particles in different treatments. The initial number of particles in the water (A) and change in particle number during the experiments (B) for particles 5-40 μm, the normal feeding range of *C. finmarchicus*. Each point represents one observation (i.e., one experimental bottle measured before and after the experiment), with *n* per treatment ranging between 2 and 6, see Supporting Table 3 for details). The overlaying box plots show the median (line), the interquartile range (box), and 1.5 × the interquartile range (whiskers) per treatment. Unfilled symbols are observations from Exp. 5 with a higher initial volume of kelp than the other experiments. Food treatments: NONE: no food, PHYTO: phytoplankton (*R. baltica*); LAMHY-FE, LAMHY-FR: fresh or frozen *L. hyperborea*, respectively; SACLA-FE, SACLA-FR: fresh or frozen *S. latissima*, respectively.")
+
+pellet_plot <- figs(name="pellet_plot","Fecal pellet production in different treatments. The number of fecal pellets counted after each experiment, using 5 min for searching per experimental bottle (for PHYTO, the total number of pellets was often higher). Each point represents one observation (i.e., one bottle), with *n* per treatment ranging between 3 and 7, see Supporting Table 4 for details. The overlaying box plots show the median (line), the interquartile range (box), and 1.5 × the interquartile range (whiskers) per treatment. Unfilled symbols are observations from Exp. 5 with a higher initial volume of kelp than the other experiments (Figure 1), and unfilled squares are from the second 24 h period of Exp. 5, after the copepods had been feeding on the respective diets for 24 h. Food treatments: NONE: no food, PHYTO: phytoplankton (*R. baltica*); LAMHY-FE, LAMHY-FR: fresh or frozen *L. hyperborea*, respectively; SACLA-FE, SACLA-FR, SACLA-P: fresh or frozen *S. latissima*, respectively.")
+
+qpcr_plot <- figs(name="qpcr_plot","Concentrations of kelp DNA extracted from copepods from different treatments. Estimated kelp DNA concentration (ng DNA/μl) extracted from copepods from different food treatments (A: *L. hyperborea*, B: *S. latissima*), compared to blanks (no sample material) and samples extracted from sedated copepods that were submerged in the kelp material for 1 min and then rinsed. Each point represents one observation (i.e., one copepod), with *n* per treatment ranging between 1 (sedated) and 8, see Supporting Tables 5 and 6 for details. The overlaying box plots show the median (line), the interquartile range (box), and 1.5 × the interquartile range (whiskers) per treatment. Unfilled circles in panel B are from Exp. 5B, after the copepods had been fed the respective diets for 48 h (treatments with *L. hyperborea* in Exp. 5 were terminated after 24h as the copepods were dead, and these samples were not analyzed). Treatments: BLANK: No sample; NONE: no food, PHYTO: phytoplankton (*R. baltica*); LAMHY-FE, LAMHY-FR: fresh or frozen *L. hyperborea*, respectively; SACLA-FE, SACLA-FR: fresh or frozen *S. latissima*, respectively; LAMHY-FE-SEDATED, SACLA-FE-SEDATED: copepods submerged in fresh *L. hyperborea* or *S. latissima* treatment while sedated, respectively.")
+```
+
+This R markdown document reproduces the figures for the article "The possible copepod link between kelp forests, the pelagic ecosystem and deep-sea carbon sequestration" by Kristina Ø. Kvile, Marc Anglès d’Auriac, Dag Altin, Rolf Erik Olsen and Kasper Hancke, currently in review in PLOS ONE. A preprint of the article is available at [bioRxiv](https://www.biorxiv.org/content/10.1101/2023.01.06.523004v1).
+
+<br><br><br>
+
+```{r particle_plot, fig.cap = particle_plot, fig.height = 4, fig.width = 7}
+
+plot_large_initial <- ggplot(particles_compare, 
+       aes(x = TREATMENT, y = LARGE_BEFORE, fill= TREATMENT)) + 
+  geom_boxplot(color="black", alpha = 0.4, outlier.shape =  NA)  +
+  geom_point(data = particles_compare,
+             aes(x = TREATMENT, y = LARGE_BEFORE, shape= EXPERIMENT),
+             size = 2, position = position_jitter(width = 0.2,  seed = 40)) +
+  scale_shape_manual(values=c(15,16,1,0),  
+                     guide = guide_legend(direction = "horizontal",
+                                          title.position = "top")) +
+  labs(title="A.") +
+  ylab("Initial particle number (5-40 μm)") + theme_bw()+
+  theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), axis.text.x =element_text(angle = 90), axis.title.x=element_blank(), legend.position = c(.725, .92), legend.background = element_rect(color="grey"),legend.text = element_text(size=8),legend.title = element_text(size=8), legend.title.align = 0.5, legend.spacing.x = unit(0.1, 'mm')) +
+  guides(fill = FALSE) 
+
+plot_large_compare <- ggplot(particles_compare, 
+       aes(x = TREATMENT, y = DIFF_LARGE, fill= TREATMENT)) + 
+  geom_boxplot(color="black", alpha = 0.4, outlier.shape =  NA) + geom_hline(yintercept = 0) +
+  geom_point(data = particles_compare,
+             aes(x = TREATMENT, y = DIFF_LARGE, shape= EXPERIMENT),
+             size = 2, position = position_jitter(width = 0.2,  seed = 40)) +
+  scale_shape_manual(values=c(15,16,1,0)) +
+  labs(title="B.") +
+  ylab("Change in particle number (5-40 μm)") +
+  theme_bw() +
+  theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), axis.text.x = element_text(angle = 90), axis.title.x=element_blank(), legend.position="none")
+
+grid.arrange( plot_large_initial, plot_large_compare, ncol=2)  
+ 
+```
+
+<br><br><br>
+  
+```{r pellet_plot, fig.cap = pellet_plot, fig.height = 4, fig.width = 3.5}
+
+  ggplot(fecal_data,
+          aes(x = TREATMENT, y = PELLETS, fill = TREATMENT)) + 
+  geom_boxplot(color="black", alpha = 0.4, outlier.shape =  NA) +
+  geom_point(data = fecal_data, aes(x = TREATMENT, y = PELLETS, shape= EXP_FIG),
+             size = 2, position = position_jitter(width = 0.2, height=0, seed = 40)) +
+    scale_shape_manual(values=c(16,1,0)) +
+ylab("Number of fecal pellets") + xlab("") +
+    theme_bw() +
+     theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), 
+        axis.text.x =element_text(angle = 90), axis.title.x=element_blank(), 
+        legend.position = c(.84, .807), 
+        legend.background = element_rect(color="grey"),
+        legend.text = element_text(size=8),legend.title = element_text(size=8),
+        legend.title.align = 0.5, legend.spacing.x = unit(0.1, 'mm'))  +
+     guides(fill = FALSE, shape = guide_legend(title="EXPERIMENT"))
+```
+
+<br><br><br>
+  
+```{r qpcr_plot, fig.cap = qpcr_plot, fig.height = 4, fig.width = 7}
+
+sac_48h <- cop_data$TUBE[cop_data$PRES=="QUICK-EXTRACT" & cop_data$EXPERIMENT=="5B"]
+sac_48h <- paste0(sac_48h,"Q")
+  
+lam_pcr_plot <- 
+  ggplot(qpcr_lam,
+  aes(x = Target, y = DNA, fill = Target)) + 
+  geom_boxplot(color="black", alpha = 0.4, outlier.shape =  NA) + 
+  geom_point(shape = 16, size = 2, position = position_jitter(width = 0.2, height=0, seed = 40)) +
+  ylim(0,0.3) + 
+  labs(title="A.") +
+  theme_bw() +
+theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), 
+        axis.text.x =element_text(angle = 90), axis.title.x=element_blank(), legend.position = "null") +
+  ylab("DNA (ng/sample)")
+
+sac_pcr_plot <- 
+ggplot(qpcr_sac,
+       aes(x = Target, y = DNA, fill = Target)) + 
+  geom_boxplot(color="black", alpha = 0.4, outlier.shape =  NA) + 
+  #geom_point(shape = 16, size = 2, position = position_jitter(width = 0.2, height=0, seed = 40)) +
+  geom_point(data = qpcr_sac %>% filter(!Sample %in% sac_48h),
+             shape = 16, size = 2, position = position_jitter(width = 0.2, height=0, seed = 40)) +
+  geom_point(data = qpcr_sac %>% filter(Sample %in% sac_48h),
+             shape = 1, size = 2, position = position_jitter(width = 0.2, height=0, seed = 40)) +
+  ylim(0,0.3) + 
+  labs(title="B.") +
+  #labs(title=expression(paste("B. ", italic("S. latissima")))) +
+  theme_bw() +
+  theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), 
+        axis.text.x =element_text(angle = 90), axis.title.x=element_blank(),
+        axis.text.y =element_blank(), axis.title.y = element_blank(), legend.position = "null") +
+  annotate("label",x = 5.5, y = 0.3, label = "   Exp. 5B (48h)") +
+  annotate("point", x = 4.6, y = 0.3,  shape = 1, size = 2)  
+
+
+grid.arrange(lam_pcr_plot, sac_pcr_plot, ncol=2)  
+
+```

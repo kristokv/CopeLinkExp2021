@@ -1,6 +1,8 @@
 # CopeLink experiment 2021
  
-<b>This repository contains the data files for the manuscript "The possible copepod link between kelp forests, the pelagic ecosystem and deep-sea carbon sequestration" by Kristina Øie Kvile , Marc B. Anglès d'Auriac, Dag Altin, Rolf Erik Olsen and Kasper Hancke, currently in review as Brief Research Report in Frontiers in Marine Science.</b><br>
+<b>This repository contains the data files and scripts to reproduce the results in article "The possible copepod link between kelp forests, the pelagic ecosystem and deep-sea carbon sequestration" by Kristina Ø. Kvile, Marc Anglès d'Auriac, Dag Altin, Rolf Erik Olsen and Kasper Hancke, currently in review in PLOS ONE. A preprint of the article is available at [bioRxiv](https://www.biorxiv.org/content/10.1101/2023.01.06.523004v1).
+
+.</b><br>
 
 Datasets:<br>
 * cop_data_final: Overview of copepod samples from all experiments, with stage and preservation method. <br>
