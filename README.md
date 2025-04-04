@@ -1,6 +1,6 @@
 # CopeLink experiment 2021
  
-<b>This repository contains the data files and scripts to reproduce the results in the article "Can copepods feed on kelp detritus? A laboratory study with *Calanus finmarchicus*" by Kristina Øie Kvile, Marc Anglès d'Auriac, Dag Altin, Rolf Erik Olsen and Kasper Hancke, accepted for publication in Marine Ecology. A preprint of the article is available at [bioRxiv](https://www.biorxiv.org/content/10.1101/2023.01.06.523004v1).
+<b>This repository contains the data files and scripts to reproduce the results in the article "Can copepods feed on kelp detritus? A laboratory study with *Calanus finmarchicus*" by Kristina Øie Kvile, Marc Anglès d'Auriac, Dag Altin, Rolf Erik Olsen and Kasper Hancke, published in [Marine Ecology](https://doi.org/10.1111/maec.70002).
 
 </b><br>
 
